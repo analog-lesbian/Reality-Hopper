@@ -1,0 +1,102 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=2]
+
+[ext_resource path="res://addons/shaderV/rgba/shiftHSV.gd" type="Script" id=1]
+
+[sub_resource type="VisualShaderNodeTexture" id=1]
+source = 2
+
+[sub_resource type="VisualShaderNodeCustom" id=2]
+default_input_values = [ 1, 1.0, 2, 1.0, 3, 1.0 ]
+script = ExtResource( 1 )
+
+[sub_resource type="VisualShaderNodeInput" id=3]
+input_name = "time"
+
+[sub_resource type="VisualShader" id=4]
+code = "shader_type canvas_item;
+
+
+// ShiftHue
+
+vec3 hsv2rgbHSVChan9eFunc(vec3 _hsv_c0l0r_HSVChan9e){
+	vec4 _K_hsv2rgbHSVChan9e = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+	vec3 _p_hsv2rgbHSVChan9e = abs(fract(_hsv_c0l0r_HSVChan9e.xxx + _K_hsv2rgbHSVChan9e.xyz) * 6.0 - _K_hsv2rgbHSVChan9e.www);
+	return vec3(_hsv_c0l0r_HSVChan9e.z * mix(_K_hsv2rgbHSVChan9e.xxx, 
+				clamp(_p_hsv2rgbHSVChan9e - _K_hsv2rgbHSVChan9e.xxx, 0.0, 1.0),
+				_hsv_c0l0r_HSVChan9e.y));
+}
+
+vec3 rgb2hvsHSVChan9eFunc(vec3 _rgb_c0l0r_HSVChan9e){
+	vec4 _K_rgb2hvsHSVChan9e = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+	vec4 _p_rgb2hvsHSVChan9e = mix( vec4(_rgb_c0l0r_HSVChan9e.bg, _K_rgb2hvsHSVChan9e.wz),
+									vec4(_rgb_c0l0r_HSVChan9e.gb, _K_rgb2hvsHSVChan9e.xy),
+									step(_rgb_c0l0r_HSVChan9e.b, _rgb_c0l0r_HSVChan9e.g));
+	vec4 _q_rgb2hvsHSVChan9e = mix( vec4(_p_rgb2hvsHSVChan9e.xyw, _rgb_c0l0r_HSVChan9e.r), 
+									vec4(_rgb_c0l0r_HSVChan9e.r, _p_rgb2hvsHSVChan9e.yzx),
+									step(_p_rgb2hvsHSVChan9e.x, _rgb_c0l0r_HSVChan9e.r));
+	float _d_rgb2hvsHSVChan9e = _q_rgb2hvsHSVChan9e.x - min(_q_rgb2hvsHSVChan9e.w, _q_rgb2hvsHSVChan9e.y);
+	return vec3(vec3(abs(_q_rgb2hvsHSVChan9e.z + (_q_rgb2hvsHSVChan9e.w - _q_rgb2hvsHSVChan9e.y) / (6.0 * _d_rgb2hvsHSVChan9e + 1.0e-10)),
+					_d_rgb2hvsHSVChan9e / (_q_rgb2hvsHSVChan9e.x + 1.0e-10),
+					_q_rgb2hvsHSVChan9e.x));
+}
+
+vec3 hsvChangeHSVChan9eFunc(vec3 _c0l0r_HSVChan9e, float _h_HSVChan9e, float _s_HSVChan9e, float _v_HSVChan9e){
+	_c0l0r_HSVChan9e = rgb2hvsHSVChan9eFunc(_c0l0r_HSVChan9e);
+	_c0l0r_HSVChan9e.r *= _h_HSVChan9e;
+	_c0l0r_HSVChan9e.g *= _s_HSVChan9e;
+	_c0l0r_HSVChan9e.b *= _v_HSVChan9e;
+	return hsv2rgbHSVChan9eFunc(_c0l0r_HSVChan9e);
+}
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// Texture:3
+	vec3 n_out3p0;
+	float n_out3p1;
+	{
+		vec4 _tex_read = texture(TEXTURE , UV.xy);
+		n_out3p0 = _tex_read.rgb;
+		n_out3p1 = _tex_read.a;
+	}
+
+// Input:5
+	float n_out5p0 = TIME;
+
+// ShiftHue:4
+	float n_in4p2 = 1.00000;
+	float n_in4p3 = 1.00000;
+	vec3 n_out4p0;
+	{
+		n_out4p0 = hsvChangeHSVChan9eFunc(n_out3p0, n_out5p0, n_in4p2, n_in4p3);
+	}
+
+// Output:0
+	COLOR.rgb = n_out4p0;
+	COLOR.a = n_out3p1;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -49, -185 )
+mode = 1
+flags/light_only = false
+nodes/fragment/0/position = Vector2( 680, 0 )
+nodes/fragment/3/node = SubResource( 1 )
+nodes/fragment/3/position = Vector2( 120, 0 )
+nodes/fragment/4/node = SubResource( 2 )
+nodes/fragment/4/position = Vector2( 400, -120 )
+nodes/fragment/5/node = SubResource( 3 )
+nodes/fragment/5/position = Vector2( 20, -120 )
+nodes/fragment/connections = PoolIntArray( 3, 1, 0, 1, 4, 0, 0, 0, 5, 0, 4, 1, 3, 0, 4, 0 )
+
+[resource]
+shader = SubResource( 4 )

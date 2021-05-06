@@ -1,3 +1,8 @@
+#HEY HEY HEY LOOK LOOK
+#KEEP LOOKING IF YOURE COMING BACK AFTER SAGE
+#PLEASE DONT IGNORE
+#OPTIMIZE THE *FUCK* OUT OF THIS CODE WHEN YOU COME BACK!!!!!! ITS BERY IMPORTANT
+
 extends KinematicBody
 
 #Player Statuses
@@ -14,19 +19,19 @@ const FRICTION = 0.8
 const GRAVITY = 0.35
 const TOPXSPEED = 8
 
+#Realities
+enum MODE {RELAXED, PULSE}
+var REALITY = 0
+
 #Character Exclusive
 enum ROSTER {CHENDA, JESS ,NATAN, MELGAS}
-
 var CHARA = ROSTER.JESS
 
 var jessTeleLength = 0
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
 #TODO: port gms code to here
 func _physics_process(_delta):
+#////////////////////////////////////Movement Setup/////////////////////////////////////
 	var move_vec = Vector3()
 	
 	var moveX = (1 if Input.is_action_pressed("actionright") else 0) - (1 if Input.is_action_pressed("actionleft") else 0);
@@ -36,6 +41,21 @@ func _physics_process(_delta):
 	if moveY != 0: dirY = sign(moveY)
 	
 	hsp = clamp(hsp,-TOPXSPEED,TOPXSPEED)
+#////////////////////////////////////Movement Setup/////////////////////////////////////
+	
+#/////////////////////////////////Reality Switching Code////////////////////////////////
+	if Input.is_action_just_pressed("modeswitch"): REALITY += 1
+	REALITY = REALITY%2
+	
+	set_collision_mask_bit(1,!REALITY)
+	set_collision_mask_bit(2,REALITY)
+	
+	get_node("/root/Spatial/RelaxedVisual").call("show" if !REALITY else "hide")
+	get_node("/root/Spatial/PulseVisual").call("show" if REALITY else "hide")
+	
+	get_node("REALITY_HUD").call("show" if !REALITY else "hide")
+	get_node("PULSE_HUD").call("show" if REALITY else "hide")
+#/////////////////////////////////Reality Switching Code////////////////////////////////
 	
 	match abs(moveX):
 		float(0): 
@@ -77,6 +97,6 @@ func _physics_process(_delta):
 		
 	move_vec.x = hsp
 	move_vec.y = vsp
-	move_vec.z = 0
+	#z = 0
 # warning-ignore:return_value_discarded
 	move_and_slide(move_vec, Vector3(0,1,0))

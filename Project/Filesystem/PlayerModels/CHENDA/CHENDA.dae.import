@@ -2,12 +2,12 @@
 
 importer="scene"
 type="PackedScene"
-path="res://.import/CHENDA.dae-193ee1cfd66a877ab926ac529a8dad86.scn"
+path="res://.import/CHENDA.dae-49310a748eee4f862b9c94919f73b1cd.scn"
 
 [deps]
 
-source_file="res://Models/Players/CHENDA/CHENDA.dae"
-dest_files=[ "res://.import/CHENDA.dae-193ee1cfd66a877ab926ac529a8dad86.scn" ]
+source_file="res://Filesystem/PlayerModels/CHENDA/CHENDA.dae"
+dest_files=[ "res://.import/CHENDA.dae-49310a748eee4f862b9c94919f73b1cd.scn" ]
 
 [params]
 
