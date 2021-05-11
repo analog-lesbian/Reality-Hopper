@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/caramelldansen.wav-240565e3e0cbf4267da44f4b40484133.sample"
+
+[deps]
+
+source_file="res://Filesystem/Music/caramelldansen.wav"
+dest_files=[ "res://.import/caramelldansen.wav-240565e3e0cbf4267da44f4b40484133.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

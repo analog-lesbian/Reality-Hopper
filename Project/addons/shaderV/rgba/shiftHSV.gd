@@ -8,7 +8,7 @@ func _init() -> void:
 	set_input_port_default_value(3, 1.0)
 
 func _get_name() -> String:
-	return "ShiftHue"
+	return "ShiftHSV"
 
 func _get_category() -> String:
 	return "RGBA"
@@ -17,9 +17,11 @@ func _get_category() -> String:
 #	return ""
 
 func _get_description() -> String:
-	return """Changes hu of input color.
+	return """Changes hue, saturation and value of input color.
 Input values recommendations:
 [hue]: min=0.0, max=1.0;
+[saturation]: min=0.0;
+[value]: min=0.0;
 """
 
 func _get_return_icon_type() -> int:
@@ -34,6 +36,10 @@ func _get_input_port_name(port: int):
 			return "color"
 		1:
 			return "hue"
+		2:
+			return "sat"
+		3:
+			return "value"
 
 func _get_input_port_type(port: int):
 	match port:

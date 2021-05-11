@@ -30,6 +30,8 @@ var CHARA = ROSTER.JESS
 var jessTeleLength = 0
 
 #TODO: port gms code to here
+
+	
 func _physics_process(_delta):
 #////////////////////////////////////Movement Setup/////////////////////////////////////
 	var move_vec = Vector3()
@@ -44,18 +46,38 @@ func _physics_process(_delta):
 #////////////////////////////////////Movement Setup/////////////////////////////////////
 	
 #/////////////////////////////////Reality Switching Code////////////////////////////////
-	if Input.is_action_just_pressed("modeswitch"): REALITY += 1
+	if Input.is_action_just_pressed("modeswitch"): 
+		REALITY += 1
+		get_node("REALITY_TRANSITION/FADE").show()
+		get_node("REALITY_TRANSITION/ANIM").play("fade")
 	REALITY = REALITY%2
 	
 	set_collision_mask_bit(1,!REALITY)
 	set_collision_mask_bit(2,REALITY)
 	
-	get_node("/root/Spatial/RelaxedVisual").call("show" if !REALITY else "hide")
-	get_node("/root/Spatial/PulseVisual").call("show" if REALITY else "hide")
+	if get_node_or_null("/root/Spatial/RELAXED"):
+		get_node("/root/Spatial/RELAXED").call("show" if !REALITY else "hide")
+	if get_node_or_null("/root/Spatial/PULSE"):
+		get_node("/root/Spatial/PULSE").call("show" if REALITY else "hide")
 	
 	get_node("REALITY_HUD").call("show" if !REALITY else "hide")
 	get_node("PULSE_HUD").call("show" if REALITY else "hide")
 #/////////////////////////////////Reality Switching Code////////////////////////////////
+	
+	
+	if get_node("cast").is_colliding():
+		var n = get_node("cast").get_collision_normal()
+		var slope_angle = (rad2deg(acos(n.dot(Vector3(0,-1,0)))) -180)*-1
+		
+	
+	
+	
+	var n = get_node("cast").get_collision_normal()
+	var vecz = n
+	var veczY = 0
+
+	var brtgddf = n.angle_to(vecz.normalized())
+	print(brtgddf)
 	
 	match abs(moveX):
 		float(0): 
@@ -97,6 +119,6 @@ func _physics_process(_delta):
 		
 	move_vec.x = hsp
 	move_vec.y = vsp
-	#z = 0
+	move_vec.z = (1 if Input.is_action_pressed("debug1") else 0) - (1 if Input.is_action_pressed("debug2") else 0)*2;
 # warning-ignore:return_value_discarded
 	move_and_slide(move_vec, Vector3(0,1,0))
