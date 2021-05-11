@@ -30,7 +30,7 @@ var CHARA = ROSTER.JESS
 var jessTeleLength = 0
 
 #TODO: port gms code to here
-
+var TIME = 359940
 	
 func _physics_process(_delta):
 #////////////////////////////////////Movement Setup/////////////////////////////////////
@@ -69,15 +69,11 @@ func _physics_process(_delta):
 		var n = get_node("cast").get_collision_normal()
 		var slope_angle = (rad2deg(acos(n.dot(Vector3(0,-1,0)))) -180)*-1
 		
+	print(str(TIME/3600).pad_zeros(2),":",str((TIME/60)%60).pad_zeros(2),":",str((TIME)%60).pad_zeros(2))
+	if Input.is_action_just_pressed("debug3"): TIME += 600
+	TIME -= 1
 	
 	
-	
-	var n = get_node("cast").get_collision_normal()
-	var vecz = n
-	var veczY = 0
-
-	var brtgddf = n.angle_to(vecz.normalized())
-	print(brtgddf)
 	
 	match abs(moveX):
 		float(0): 
