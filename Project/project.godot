@@ -567,10 +567,14 @@ _global_script_class_icons={
 [application]
 
 config/name="Reality Hopper"
-run/main_scene="res://test1.tscn"
+run/main_scene="res://TITLE.tscn"
 boot_splash/image="res://dummy.png"
 boot_splash/bg_color=Color( 0, 0, 0, 1 )
 config/icon="res://icon.png"
+
+[autoload]
+
+Global="*res://GLOBAL.tscn"
 
 [debug]
 
@@ -581,6 +585,8 @@ settings/fps/force_fps=60
 window/size/width=426
 window/size/height=240
 window/size/resizable=false
+window/stretch/mode="viewport"
+window/stretch/aspect="keep"
 
 [input]
 
@@ -740,5 +746,6 @@ debug0={
 
 [rendering]
 
-quality/2d/use_pixel_snap=true
+2d/snapping/use_gpu_pixel_snap=true
 environment/default_environment="res://default_env.tres"
+quality/2d/use_pixel_snap=true

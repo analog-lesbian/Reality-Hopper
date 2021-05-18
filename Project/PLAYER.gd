@@ -27,8 +27,14 @@ var CHARA = ROSTER.JESS
 
 var JESSTELELENGTH = 0
 
-var TIME = 7200 #359940 IS ABSOLUTE MAXIMUM
+var TIME = 3600 #359940 IS ABSOLUTE MAXIMUM
 
+func get_triangle_normal(a, b, c):
+	var side1 = b - a
+	var side2 = c - a
+	var normal = side1.cross(side2)
+	return normal
+	
 func _physics_process(_delta):
 #////////////////////////////////////Movement Setup/////////////////////////////////////
 	var move_vec = Vector3()
@@ -43,8 +49,9 @@ func _physics_process(_delta):
 #/////////////////////////////////Reality Switching Code////////////////////////////////
 	if Input.is_action_just_pressed("modeswitch"): 
 		REALITY += 1
-		get_node("REALITY_TRANSITION/FADE").show()
-		get_node("REALITY_TRANSITION/ANIM").play("fade")
+		get_node("FADE").show()
+		get_node("ANIM").seek(0)
+		get_node("ANIM").play_backwards("fade")
 	REALITY = REALITY%2
 	
 	set_collision_mask_bit(1,!REALITY)
@@ -56,7 +63,7 @@ func _physics_process(_delta):
 	get_node("REALITY_HUD").call("show" if !REALITY else "hide")
 	get_node("PULSE_HUD").call("show" if REALITY else "hide")
 #///////////////////////////////////Time Management Code//////////////////////////////////
-	print(str(TIME/3600).pad_zeros(2),":",str((TIME/60)%60).pad_zeros(2),":",str((TIME)%60).pad_zeros(2))
+	#print(str(TIME/3600).pad_zeros(2),":",str((TIME/60)%60).pad_zeros(2),":",str((TIME)%60).pad_zeros(2))
 	if Input.is_action_just_pressed("debug3"): TIME += 600
 	TIME -= 1
 #/////////////////////////////////Horizontal Movement Code////////////////////////////////
@@ -103,11 +110,6 @@ func _physics_process(_delta):
 #//////////////////////////////////////Miscallaneous Code/////////////////////////////////////
 	move_vec.x = hsp
 	move_vec.y = vsp
-	move_vec.z = (1 if Input.is_action_pressed("debug1") else 0) - (1 if Input.is_action_pressed("debug2") else 0)*2;
-	
-	#plcholder code for switching character angle along Z axis
-	if get_node("cast").is_colliding():
-		var n = get_node("cast").get_collision_normal()
-		var slope_angle = (rad2deg(acos(n.dot(Vector3(0,-1,0)))) -180)*-1
+	move_vec.z = (1 if Input.is_action_pressed("debug9") else 0) - (1 if Input.is_action_pressed("debug0") else 0)*2;
 	
 	move_and_slide(move_vec, Vector3(0,1,0))
