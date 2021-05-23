@@ -567,14 +567,14 @@ _global_script_class_icons={
 [application]
 
 config/name="Reality Hopper"
-run/main_scene="res://TITLE.tscn"
+run/main_scene="res://Filesystem/TITLE.tscn"
 boot_splash/image="res://dummy.png"
 boot_splash/bg_color=Color( 0, 0, 0, 1 )
 config/icon="res://icon.png"
 
 [autoload]
 
-Global="*res://GLOBAL.tscn"
+GLOBAL="*res://Filesystem/GLOBAL.tscn"
 
 [debug]
 
