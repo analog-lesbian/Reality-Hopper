@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/GRADING.obj-1768750742200c70891e91cd0b63bfec.mesh"
+
+[deps]
+
+files=[ "res://.import/GRADING.obj-1768750742200c70891e91cd0b63bfec.mesh" ]
+
+source_file="res://Filesystem/STAGE/STAGE1/MODELS/GRADING.obj"
+dest_files=[ "res://.import/GRADING.obj-1768750742200c70891e91cd0b63bfec.mesh", "res://.import/GRADING.obj-1768750742200c70891e91cd0b63bfec.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true
