@@ -39,8 +39,8 @@ func _physics_process(_delta):
 #////////////////////////////////////Movement Setup/////////////////////////////////////
 	var move_vec = Vector3()
 	
-	var moveX = (1 if Input.is_action_pressed("actionright") else 0) - (1 if Input.is_action_pressed("actionleft") else 0);
-	var moveY = (1 if Input.is_action_pressed("actionup") else 0) - (1 if Input.is_action_pressed("actiondown") else 0);
+	var moveX = (int(Input.is_action_pressed("actionright"))) - (int(Input.is_action_pressed("actionleft")));
+	var moveY = (int(Input.is_action_pressed("actionup"))) - (int(Input.is_action_pressed("actiondown")));
 	
 	if moveX != 0: dirX = sign(moveX)
 	if moveY != 0: dirY = sign(moveY)
@@ -98,9 +98,11 @@ func _physics_process(_delta):
 	get_node("PULSE_HUD").call("show" if REALITY else "hide")
 
 #///////////////////////////////////Time Management Code//////////////////////////////////
+	
 	#print(str(TIME/3600).pad_zeros(2),":",str((TIME/60)%60).pad_zeros(2),":",str((TIME)%60).pad_zeros(2))
 	if Input.is_action_just_pressed("debug3"): TIME += 600
 	TIME -= 1
+	
 #/////////////////////////////////Horizontal Movement Code////////////////////////////////
 	match abs(moveX):
 		float(0): 
@@ -111,29 +113,34 @@ func _physics_process(_delta):
 		float(1):
 			if abs(hsp) >= 0: hsp += ACCELERATION*dirX
 #/////////////////////////////////Vertical Movement Code////////////////////////////////
-	if !is_on_floor():
-		vsp -= GRAVITY*grvintensity
-		if !is_on_ceiling():
-			if Input.is_action_pressed("action1") and (jumpTime != 20):
-				# TODO: make this feel less like crap
-				if jumpTime < 20: jumpTime += 1
-				if (jumpTime < 20): vsp = 12
-			else: 
-				grvintensity = 1.5
-				jumpTime = 20
-	elif !is_on_ceiling():
-		vsp = 0
+	vsp -= (GRAVITY*grvintensity)*int(!is_on_floor())
+	
+	if is_on_floor():
+		grvintensity = 0
 		jumpTime = 0
+		if vsp < 0: vsp = 0
+		
+	if !is_on_ceiling():
+		if Input.is_action_pressed("action1") and (jumpTime != 20):
+			grvintensity = 0
+			if jumpTime < 20: jumpTime += 1
+			if (jumpTime < 20): vsp = 12
+		else: 
+			grvintensity = 1.5
+			jumpTime = 20
 	else:
 		vsp = 0
-	#This code is weirdly structured. Is there a way to make this better?
+		jumpTime = 20
+	
+	
+	#This code up here is weirdly structured. Is there a way to make this better?
 
 	degreetest += (1 if Input.is_action_pressed("debug3") else 0) - (1 if Input.is_action_pressed("debug4") else 0)
 		
 #//////////////////////////////////////Miscallaneous Code/////////////////////////////////////
-
+	
 	move_vec.x = hsp
 	move_vec.y = vsp
-	move_vec.z = (1 if Input.is_action_pressed("debug9") else 0) - (1 if Input.is_action_pressed("debug0") else 0)*2;
+	move_vec.z = (int(Input.is_action_pressed("debug9"))) - (int(Input.is_action_pressed("debug0")))*2;
 	
 	move_and_slide(move_vec, Vector3(0,1,0))
