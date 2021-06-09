@@ -83,9 +83,9 @@ func _physics_process(_delta):
 	
 	if Input.is_action_just_pressed("modeswitch"): 
 		REALITY += 1
-		get_node("FADE").show()
-		get_node("ANIM").seek(0)
-		get_node("ANIM").play("fade")
+		get_node("HUD/FADE").show()
+		get_node("HUD/ANIM").seek(0)
+		get_node("HUD/ANIM").play("fade")
 	REALITY = REALITY%2
 	
 	set_collision_mask_bit(1,!REALITY)
@@ -94,8 +94,8 @@ func _physics_process(_delta):
 	get_node("/root/PROPERTIES/RELAXED").call("show" if !REALITY else "hide")
 	get_node("/root/PROPERTIES/PULSE").call("show" if REALITY else "hide")
 	
-	get_node("REALITY_HUD").call("show" if !REALITY else "hide")
-	get_node("PULSE_HUD").call("show" if REALITY else "hide")
+	get_node("HUD/REALITY_HUD").call("show" if !REALITY else "hide")
+	get_node("HUD/PULSE_HUD").call("show" if REALITY else "hide")
 
 #///////////////////////////////////Time Management Code//////////////////////////////////
 	
