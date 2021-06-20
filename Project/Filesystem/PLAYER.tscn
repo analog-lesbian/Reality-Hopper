@@ -5,8 +5,7 @@
 [ext_resource path="res://Filesystem/SPRITES_TEXTURES/HUD/PULSE_1.png" type="Texture" id=3]
 [ext_resource path="res://Filesystem/SPRITES_TEXTURES/HUD/PULSE_3.png" type="Texture" id=4]
 [ext_resource path="res://Filesystem/PULSE_UI.gd" type="Script" id=5]
-[ext_resource path="res://Filesystem/MODELS/TEST/untitled.obj" type="ArrayMesh" id=6]
-[ext_resource path="res://Filesystem/STAGE/STAGE1/OBJ/PAL.png" type="Texture" id=7]
+[ext_resource path="res://icon.png" type="Texture" id=6]
 [ext_resource path="res://Filesystem/SPRITES_TEXTURES/HUD/RELAXED_1.png" type="Texture" id=8]
 [ext_resource path="res://Filesystem/SPRITES_TEXTURES/HUD/RELAXED_2.png" type="Texture" id=9]
 [ext_resource path="res://Filesystem/SPRITES_TEXTURES/HUD/RELAXED_3.png" type="Texture" id=10]
@@ -16,7 +15,18 @@
 [sub_resource type="Environment" id=2]
 ambient_light_color = Color( 1, 1, 1, 1 )
 
-[sub_resource type="Shader" id=3]
+[sub_resource type="ViewportTexture" id=3]
+viewport_path = NodePath("SPRITE/Viewport")
+
+[sub_resource type="SpriteFrames" id=4]
+animations = [ {
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "IDLE",
+"speed": 5.0
+} ]
+
+[sub_resource type="Shader" id=5]
 code = "shader_type canvas_item;
 render_mode unshaded;
 
@@ -50,51 +60,6 @@ void fragment() {
 	
 }"
 
-[sub_resource type="ShaderMaterial" id=4]
-shader = SubResource( 3 )
-shader_param/Shift_Hue = null
-
-[sub_resource type="Shader" id=5]
-code = "shader_type canvas_item;
-render_mode unshaded;
-
-uniform float Shift_Hue;
-
-vec2 d1stort1onUVAnimatedFunc(vec2 _uv_d1st, float _d1stX_d1st, float _waveX_d1st, float _t1me_d1st){
-	_uv_d1st.x += sin(_uv_d1st.y * _waveX_d1st + _t1me_d1st) * _d1stX_d1st;
-	return _uv_d1st;
-}
-
-void fragment() {
-	vec3 input_color;
-	vec3 n_out3p0; {n_out3p0.xy = d1stort1onUVAnimatedFunc(UV.xy, 0.04000, 5.00000, TIME*1.00000);}
-	vec4 _tex_read = texture(TEXTURE, n_out3p0.xy);
-	input_color = _tex_read.rgb;
-	
-	vec3 color_hsv; {
-		vec3 c = input_color;
-		vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-		vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
-		vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
-		float d = q.x - min(q.w, q.y);
-		float e = 1.0e-10;
-		color_hsv=vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-	}
-
-	color_hsv.x = mod((color_hsv.x + TIME / 30.00), 1.0f);
-
-	vec3 color_rgb; {
-		vec3 c = color_hsv;
-		vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-		vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www); //number seems to be located HERE!
-		color_rgb=c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-	}
-	
-	_tex_read = vec4(color_rgb.rgb,_tex_read.a);
-	COLOR.rgba = _tex_read;
-	
-}"
-
 [sub_resource type="ShaderMaterial" id=6]
 shader = SubResource( 5 )
 shader_param/Shift_Hue = null
@@ -112,7 +77,7 @@ vec2 d1stort1onUVAnimatedFunc(vec2 _uv_d1st, float _d1stX_d1st, float _waveX_d1s
 
 void fragment() {
 	vec3 input_color;
-	vec3 n_out3p0; {n_out3p0.xy = d1stort1onUVAnimatedFunc(UV.xy, 0.02000, 5.00000, TIME*1.00000);}
+	vec3 n_out3p0; {n_out3p0.xy = d1stort1onUVAnimatedFunc(UV.xy, 0.04000, 5.00000, TIME*1.00000);}
 	vec4 _tex_read = texture(TEXTURE, n_out3p0.xy);
 	input_color = _tex_read.rgb;
 	
@@ -157,7 +122,7 @@ vec2 d1stort1onUVAnimatedFunc(vec2 _uv_d1st, float _d1stX_d1st, float _waveX_d1s
 
 void fragment() {
 	vec3 input_color;
-	vec3 n_out3p0; {n_out3p0.xy = d1stort1onUVAnimatedFunc(UV.xy, 0.01000, 5.00000, TIME*1.00000);}
+	vec3 n_out3p0; {n_out3p0.xy = d1stort1onUVAnimatedFunc(UV.xy, 0.02000, 5.00000, TIME*1.00000);}
 	vec4 _tex_read = texture(TEXTURE, n_out3p0.xy);
 	input_color = _tex_read.rgb;
 	
@@ -189,7 +154,55 @@ void fragment() {
 shader = SubResource( 9 )
 shader_param/Shift_Hue = null
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Shader" id=11]
+code = "shader_type canvas_item;
+render_mode unshaded;
+
+uniform float Shift_Hue;
+
+vec2 d1stort1onUVAnimatedFunc(vec2 _uv_d1st, float _d1stX_d1st, float _waveX_d1st, float _t1me_d1st){
+	_uv_d1st.x += sin(_uv_d1st.y * _waveX_d1st + _t1me_d1st) * _d1stX_d1st;
+	return _uv_d1st;
+}
+
+void fragment() {
+	vec3 input_color;
+	vec3 n_out3p0; {n_out3p0.xy = d1stort1onUVAnimatedFunc(UV.xy, 0.01000, 5.00000, TIME*1.00000);}
+	vec4 _tex_read = texture(TEXTURE, n_out3p0.xy);
+	input_color = _tex_read.rgb;
+	
+	vec3 color_hsv; {
+		vec3 c = input_color;
+		vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+		vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+		vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+		float d = q.x - min(q.w, q.y);
+		float e = 1.0e-10;
+		color_hsv=vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+	}
+
+	color_hsv.x = mod((color_hsv.x + TIME / 30.00), 1.0f);
+
+	vec3 color_rgb; {
+		vec3 c = color_hsv;
+		vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+		vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www); //number seems to be located HERE!
+		color_rgb=c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+	}
+	
+	_tex_read = vec4(color_rgb.rgb,_tex_read.a);
+	COLOR.rgba = _tex_read;
+	
+}"
+
+[sub_resource type="ShaderMaterial" id=12]
+shader = SubResource( 11 )
+shader_param/Shift_Hue = null
+
+[sub_resource type="Animation" id=13]
+resource_name = "death"
+
+[sub_resource type="Animation" id=14]
 length = 0.3
 tracks/0/type = "value"
 tracks/0/path = NodePath("FADE:color")
@@ -204,132 +217,8 @@ tracks/0/keys = {
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 
-[sub_resource type="Shader" id=18]
-code = "shader_type spatial;
-
-//render_mode ambient_light_disabled;
-
-const float PI = 3.1415926536f;
-
-uniform vec4 albedo : hint_color = vec4(1.0f);
-uniform sampler2D albedo_texture : hint_albedo;
-uniform bool clamp_diffuse_to_max = false;
-
-uniform int cuts : hint_range(1, 8) = 3;
-uniform float wrap : hint_range(-2.0f, 2.0f) = 0.0f;
-uniform float steepness : hint_range(1.0f, 8.0f) = 1.0f;
-
-uniform bool use_attenuation = true;
-
-uniform bool use_specular = true;
-uniform float specular_strength : hint_range(0.0f, 1.0f) = 1.0f;
-uniform float specular_shininess : hint_range(0.0f, 32.0f) = 16.0f;
-uniform sampler2D specular_map : hint_albedo;
-
-uniform bool use_rim = true;
-uniform float rim_width : hint_range(0.0f, 16.0f) = 8.0f;
-uniform vec4 rim_color : hint_color = vec4(1.0f);
-
-uniform bool use_ramp = false;
-uniform sampler2D ramp : hint_albedo;
-
-uniform bool use_borders = false;
-uniform float border_width = 0.01f;
-
-varying vec3 vertex_pos;
-varying vec3 normal;
-
-float split_specular(float specular) {
-	return step(0.5f, specular);
-}
-
-void vertex() {
-	vertex_pos = VERTEX;
-	normal = NORMAL;
-}
-
-void fragment() {
-	ALBEDO = albedo.rgb * texture(albedo_texture, UV).rgb;
-}
-
-void light() {
-	// Attenuation.
-	float attenuation = 1.0f;
-	if (use_attenuation) {
-		attenuation = ATTENUATION.x;
-	}
-	
-	// Diffuse lighting.
-	float NdotL = dot(NORMAL, LIGHT);
-	float diffuse_amount = NdotL + (attenuation - 1.0) + wrap;
-	//float diffuse_amount = NdotL * attenuation + wrap;
-	diffuse_amount *= steepness;
-	float cuts_inv = 1.0f / float(cuts);
-	float diffuse_stepped = clamp(diffuse_amount + mod(1.0f - diffuse_amount, cuts_inv), 0.0f, 1.0f);
-
-	// Calculate borders.
-	float border = 0.0f;
-	if (use_borders) {
-		float corr_border_width = length(cross(NORMAL, LIGHT)) * border_width * steepness;
-		border = step(diffuse_stepped - corr_border_width, diffuse_amount)
-				 - step(1.0 - corr_border_width, diffuse_amount);
-	}
-	
-	// Apply diffuse result to different styles.
-	vec3 diffuse = ALBEDO.rgb * LIGHT_COLOR / PI;
-	if (use_ramp) {
-		diffuse *= texture(ramp, vec2(diffuse_stepped * (1.0f - border), 0.0f)).rgb;
-	} else {
-		diffuse *= diffuse_stepped * (1.0f - border);
-	}
-	
-	if (clamp_diffuse_to_max) {
-		// Clamp diffuse to max for multiple light sources.
-		DIFFUSE_LIGHT = max(DIFFUSE_LIGHT, diffuse);
-	} else {
-		DIFFUSE_LIGHT += diffuse;
-	}
-	
-	// Specular lighting.
-	if (use_specular) {
-		vec3 H = normalize(LIGHT + VIEW);
-		float NdotH = dot(NORMAL, H);
-		float specular_amount = max(pow(NdotH, specular_shininess*specular_shininess), 0.0f)
-							    * texture(specular_map, UV).r
-								* attenuation;
-		specular_amount = split_specular(specular_amount);
-		SPECULAR_LIGHT += specular_strength * specular_amount * LIGHT_COLOR;
-	}
-	
-	// Simple rim lighting.
-	if (use_rim) {
-		float NdotV = dot(NORMAL, VIEW);
-		float rim_light = pow(1.0 - NdotV, rim_width);
-		DIFFUSE_LIGHT += rim_light * rim_color.rgb * rim_color.a * LIGHT_COLOR / PI;
-	}
-}"
-
-[sub_resource type="ShaderMaterial" id=17]
-render_priority = -1
-shader = SubResource( 18 )
-shader_param/albedo = Color( 0.698039, 0.698039, 0.698039, 1 )
-shader_param/clamp_diffuse_to_max = true
-shader_param/cuts = 7
-shader_param/wrap = 0.0
-shader_param/steepness = 1.0
-shader_param/use_attenuation = false
-shader_param/use_specular = false
-shader_param/specular_strength = 1.0
-shader_param/specular_shininess = 16.0
-shader_param/use_rim = false
-shader_param/rim_width = 3.081
-shader_param/rim_color = Color( 1, 1, 1, 1 )
-shader_param/use_ramp = true
-shader_param/use_borders = false
-shader_param/border_width = 0.01
-shader_param/ramp = ExtResource( 7 )
-
 [node name="KinematicBody" type="KinematicBody"]
+collision_mask = 4
 script = ExtResource( 1 )
 
 [node name="COL_SHAPE" type="CollisionShape" parent="."]
@@ -341,22 +230,34 @@ cast_to = Vector3( 0, -100, 0 )
 collision_mask = 7
 
 [node name="CAMERA" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.33235 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.0524 )
 environment = SubResource( 2 )
 fov = 50.0
 
-[node name="GFX_PLACEHOLDER" type="CSGBox" parent="."]
+[node name="SPRITE" type="Sprite3D" parent="."]
+transform = Transform( 1, 8.74228e-08, 8.74228e-08, 8.74228e-08, -1, 0, 8.74228e-08, 7.64274e-15, -1, 0, 0, 0 )
 visible = false
+texture = SubResource( 3 )
+
+[node name="Viewport" type="Viewport" parent="SPRITE"]
+size = Vector2( 426, 240 )
+transparent_bg = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="SPRITE/Viewport"]
+frames = SubResource( 4 )
+animation = "IDLE"
+offset = Vector2( 100, 100 )
 
 [node name="HUD" type="Control" parent="."]
-margin_right = 40.0
+margin_left = 0.943878
+margin_right = 40.9439
 margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="PULSE_HUD" type="Container" parent="HUD"]
-material = SubResource( 4 )
+material = SubResource( 6 )
 margin_top = 0.487337
 margin_bottom = 0.487337
 script = ExtResource( 5 )
@@ -383,21 +284,22 @@ size_flags_stretch_ratio = 0.0
 texture = ExtResource( 3 )
 
 [node name="REALITY_HUD" type="Control" parent="HUD"]
-margin_right = 426.0
+margin_left = -0.667419
+margin_right = 425.333
 margin_bottom = 240.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="RELAXED_3" type="TextureRect" parent="HUD/REALITY_HUD"]
-material = SubResource( 6 )
+material = SubResource( 8 )
 texture = ExtResource( 10 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="RELAXED_2" type="TextureRect" parent="HUD/REALITY_HUD"]
-material = SubResource( 8 )
+material = SubResource( 10 )
 texture = ExtResource( 9 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -405,7 +307,7 @@ __meta__ = {
 
 [node name="RELAXED_1" type="TextureRect" parent="HUD/REALITY_HUD"]
 pause_mode = 2
-material = SubResource( 10 )
+material = SubResource( 12 )
 margin_top = 0.420448
 margin_right = 228.0
 margin_bottom = 77.4204
@@ -416,7 +318,8 @@ __meta__ = {
 }
 
 [node name="ANIM" type="AnimationPlayer" parent="HUD"]
-anims/fade = SubResource( 11 )
+anims/death = SubResource( 13 )
+anims/fade = SubResource( 14 )
 
 [node name="FADE" type="ColorRect" parent="HUD"]
 visible = false
@@ -426,11 +329,4 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="untitled" type="MeshInstance" parent="."]
-transform = Transform( 2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, -1, 0 )
-mesh = ExtResource( 6 )
-material/0 = SubResource( 17 )
-material/1 = null
-material/2 = null
-material/3 = null
-material/4 = null
+[node name="CSGBox" type="CSGBox" parent="."]

@@ -135,8 +135,9 @@ func _physics_process(_delta):
 	
 	#This code up here is weirdly structured. Is there a way to make this better?
 
-	degreetest += (1 if Input.is_action_pressed("debug3") else 0) - (1 if Input.is_action_pressed("debug4") else 0)
-		
+	if Input.is_action_pressed("debug3"):
+		get_node("/root/GLOBAL/DRAW_TOP_PRIORITY").scene_change("reset")
+	
 #//////////////////////////////////////Miscallaneous Code/////////////////////////////////////
 	
 	move_vec.x = hsp
