@@ -3,6 +3,9 @@ extends KinematicBody
 func _process(delta):
 	pass
 
-func _on_Area_body_entered(body):
-	queue_free()
-	
+
+func hurt_player(body):
+	body.damaged()
+
+func stomped():
+	pass # Replace with function body.

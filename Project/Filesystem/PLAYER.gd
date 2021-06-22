@@ -1,8 +1,3 @@
-#HEY HEY HEY LOOK LOOK
-#KEEP LOOKING IF YOURE COMING BACK AFTER SAGE
-#PLEASE DONT IGNORE
-#OPTIMIZE THE *FUCK* OUT OF THIS CODE WHEN YOU COME BACK!!!!!! ITS BERY IMPORTANT
-
 extends KinematicBody
 
 #Player Statuses
@@ -23,6 +18,8 @@ const GRAVITY = 0.35
 const TOPXSPEED = 8
 
 #Modifiers
+var moveableX = true
+var moveableY = true
 var grvintensity = 1
 
 #Character Exclusive
@@ -31,12 +28,10 @@ var CHARA = ROSTER.JESS
 
 var JESSTELELENGTH = 0
 
-
-var TIME = 3600 #359940 IS ABSOLUTE MAXIMUM
-
+var TIME = 3600 #359940 is maximum!
 
 func _physics_process(_delta):
-#////////////////////////////////////Movement Setup/////////////////////////////////////
+#////////////////////////////////////Movement /////////////////////////////////////
 	var move_vec = Vector3()
 	
 	var moveX = (int(Input.is_action_pressed("actionright"))) - (int(Input.is_action_pressed("actionleft")));
@@ -46,39 +41,49 @@ func _physics_process(_delta):
 	if moveY != 0: dirY = sign(moveY)
 	
 	hsp = clamp(hsp,-TOPXSPEED,TOPXSPEED)
-
-#//////////////////////////////////////Character Code/////////////////////////////////////
-	match REALITY:
-		0:
-			match CHARA:
-				ROSTER.CHENDA:
-					pass
-				ROSTER.JESS:
-					if Input.is_action_pressed("action2"):
-						if JESSTELELENGTH > 0:
-							hsp = moveX*20
-							vsp = moveY*20
-							JESSTELELENGTH -= 0.1
-					else: JESSTELELENGTH = 2
-				ROSTER.MELGAS:
-					pass #write gun code
-				ROSTER.NATAN:
-					pass #write bat swing code. you get the drill lol
-		1:
-			match CHARA:
-				ROSTER.CHENDA:
-					pass
-				ROSTER.JESS:
-					if Input.is_action_pressed("action2"):
-						if JESSTELELENGTH > 0:
-							hsp = 0
-							vsp = 0
-							JESSTELELENGTH = 0
-				ROSTER.MELGAS:
-					pass #write gun code
-				ROSTER.NATAN:
-					pass #write bat swing code. you get the drill lol
 	
+	#Horizontal 
+	
+	match abs(float(moveX && moveableX == true)):
+		float(0): 
+			if abs(hsp) > 0: hsp -= FRICTION*sign(hsp) 
+			if abs(hsp) <= FRICTION: hsp = 0
+		float(1):
+			if abs(hsp) >= 0: hsp += ACCELERATION*dirX
+			
+#Vertical 
+	vsp -= (GRAVITY*grvintensity)*int(!is_on_floor())
+	if moveableY:
+		if is_on_floor():
+			grvintensity = 0
+			jumpTime = 0
+			if vsp < 0: vsp = 0
+		if !is_on_ceiling():
+			if Input.is_action_pressed("action1") and (jumpTime != 20):
+				grvintensity = 0
+				if jumpTime < 20: jumpTime += 1
+				if (jumpTime < 20): vsp = 12
+			else: 
+				grvintensity = 1.5	
+				jumpTime = 20
+		else:
+			vsp = 0
+			jumpTime = 20
+	else:
+		vsp = 0
+		grvintensity = 0
+	
+#//////////////////////////////////////Character Code/////////////////////////////////////
+	#Other characters will not be implemented yet! This is reserved for after the demo.
+	match CHARA:
+		ROSTER.CHENDA:
+			pass
+		ROSTER.JESS:
+			pass
+		ROSTER.MELGAS:
+			pass #write gun code
+		ROSTER.NATAN:
+			pass
 #/////////////////////////////////Reality Switching Code////////////////////////////////
 	
 	if Input.is_action_just_pressed("modeswitch"): 
@@ -103,41 +108,6 @@ func _physics_process(_delta):
 	if Input.is_action_just_pressed("debug3"): TIME += 600
 	TIME -= 1
 	
-#/////////////////////////////////Horizontal Movement Code////////////////////////////////
-	match abs(moveX):
-		float(0): 
-			if abs(hsp) > 0: 
-				hsp -= FRICTION*sign(hsp) 
-			if abs(hsp) <= FRICTION: 
-				hsp = 0
-		float(1):
-			if abs(hsp) >= 0: hsp += ACCELERATION*dirX
-#/////////////////////////////////Vertical Movement Code////////////////////////////////
-	vsp -= (GRAVITY*grvintensity)*int(!is_on_floor())
-	
-	if is_on_floor():
-		grvintensity = 0
-		jumpTime = 0
-		if vsp < 0: vsp = 0
-		
-	if !is_on_ceiling():
-		if Input.is_action_pressed("action1") and (jumpTime != 20):
-			grvintensity = 0
-			if jumpTime < 20: jumpTime += 1
-			if (jumpTime < 20): vsp = 12
-		else: 
-			grvintensity = 1.5
-			jumpTime = 20
-	else:
-		vsp = 0
-		jumpTime = 20
-	
-	
-	#This code up here is weirdly structured. Is there a way to make this better?
-
-	if Input.is_action_pressed("debug3"):
-		get_node("/root/GLOBAL/DRAW_TOP_PRIORITY").scene_change("reset")
-	
 #//////////////////////////////////////Miscallaneous Code/////////////////////////////////////
 	
 	move_vec.x = hsp
@@ -145,3 +115,10 @@ func _physics_process(_delta):
 	move_vec.z = (int(Input.is_action_pressed("debug9"))) - (int(Input.is_action_pressed("debug0")))*2;
 	
 	move_and_slide(move_vec, Vector3(0,1,0))
+	
+	print(vsp)
+	
+func _damaged():
+	moveableX = false
+	moveableY = false
+	get_node("/root/GLOBAL/DRAW_TOP_PRIORITY").scene_change("reset", 2)
