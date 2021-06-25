@@ -21,12 +21,6 @@ transform = Transform( 1, -3.26073e-09, 2.54725e-11, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 mesh = ExtResource( 1 )
 material/0 = null
 
-[node name="ENEMY" parent="RELAXED" instance=ExtResource( 4 )]
-transform = Transform( 1, -9.77986e-09, 6.91274e-11, -4.65661e-10, 1, -1.86265e-09, -2.98791e-15, 9.31323e-10, 1, 7.15509, 4.32847, -0.0523558 )
-
-[node name="CollisionShape" parent="RELAXED/ENEMY/DEATH_AREA" index="0"]
-transform = Transform( 0.7, 0, 0, 0, 0.1, 0, 0, 0, 0.7, -2.313, 1.1, 0 )
-
 [node name="StaticBody" type="StaticBody" parent="RELAXED"]
 collision_mask = 0
 
@@ -44,8 +38,14 @@ material/0 = null
 collision_layer = 2
 collision_mask = 0
 
+[node name="ENEMY" parent="PULSE/StaticBody" instance=ExtResource( 4 )]
+transform = Transform( 1, -9.77977e-09, 6.1851e-11, -4.65754e-10, 1, -1.86265e-09, -3.99089e-12, 9.31323e-10, 1, 7.15983, 5.39358, -0.0652391 )
+
+[node name="CollisionShape" parent="PULSE/StaticBody/ENEMY/DEATH_AREA" index="0"]
+transform = Transform( 0.7, 0, 0, 0, 0.1, 0, 0, 0, 0.7, -2.313, 1.1, 0 )
+
 [node name="CollisionShape" type="CollisionShape" parent="PULSE/StaticBody"]
 transform = Transform( 1, -9.32291e-10, 5.84255e-15, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 shape = SubResource( 1 )
 
-[editable path="RELAXED/ENEMY"]
+[editable path="PULSE/StaticBody/ENEMY"]
